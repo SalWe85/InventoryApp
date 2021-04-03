@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inventory app</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <nav>
+      <h1>Inventory app</h1>
+    </nav>
+
+    <main>
+      <form id="add-item-form">
+        <label class="label" for="component-name">Add item</label>
+        <input
+          type="text"
+          class="textbox"
+          required
+          placeholder="New item"
+          id="new-item"
+        />
+        <input type="submit" class="btn" value="Add" />
+      </form>
+
+      <input
+        type="text"
+        placeholder="Check if item exists"
+        class="textbox"
+        id="check-exists"
+      />
+
+      <div class="table-container">
+        <table border="1" id="stats-table">
+          <thead>
+            <tr>
+              <th>Item (total: <span id="total">0</span>)</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </main>
+
+    <script>
+      class Inventory {
+  
+    constructor() {
+    this.items = [];
+  }
+
+  addItem(item) {
+    return this.items.push(item);
+  }
+
+  getItems() {
+    return this.items;
+  }
+
+  getCount() {
+    return this.items.length;
+  }
+
+  exists(item) {
+    return this.items.includes(item);
+  }
+}
+
+const form = document.querySelector("#add-item-form");
+const newItem = document.querySelector("#new-item");
+const tbody = document.querySelector("#tbody");
+const total = document.querySelector("#total");
+const checkExists = document.querySelector("#check-exists");
+
+const inventory = new Inventory;
+
+const render = () => {
+    let html = "";
+    inventory.getItems().forEach(item => {
+        html += `<tr><td>${item}</td></tr>`
+    });
+    tbody.innerHTML = html;
+    total.textContent = inventory.getCount();
+}
+
+form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    inventory.addItem(newItem.value);
+    // empty text field
+    newItem.value = "";
+    // re-render
+    render();
+});
+
+checkExists.addEventListener("keyup", () => {
+    const itemToCheck = checkExists.value;
+    const exists = inventory.exists(itemToCheck);
+    if (exists) {
+        checkExists.classList.add("found");
+        checkExists.classList.remove("notfound");
+    } else {
+        checkExists.classList.remove("found");
+        checkExists.classList.add("notfound");
+    }
+});
+
+    </script>
+  </body>
+</html>
